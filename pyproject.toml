@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "open-model-finetuning-lab"
+version = "0.1.0"
+description = "A Python-first lab for learning open-model fine-tuning, evaluation, and serving."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "Repository Maintainers" }
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0"
+]
+llm = [
+  "accelerate>=1.0",
+  "datasets>=3.0",
+  "evaluate>=0.4",
+  "peft>=0.13",
+  "transformers>=4.45",
+  "trl>=0.11"
+]
+serve = [
+  "fastapi>=0.115",
+  "uvicorn>=0.32"
+]
+
+[project.scripts]
+omflab = "open_model_finetuning_lab.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

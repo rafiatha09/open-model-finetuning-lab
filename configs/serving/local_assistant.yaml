@@ -1,0 +1,9 @@
+# Starter serving config placeholder.
+
+assistant_name: "domain-assistant"
+model_path: "models/latest"
+interface: "cli"
+max_new_tokens: 256
+temperature: 0.2
+system_prompt: |
+  You are a careful domain assistant. Be factual, concise, and explicit about uncertainty.

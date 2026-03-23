@@ -1,0 +1,11 @@
+# Starter evaluation config placeholder.
+
+experiment_name: "baseline-eval"
+dataset_path: "data/sample/domain_assistant_examples.jsonl"
+metrics:
+  - "exact_match"
+  - "qualitative_review"
+comparison:
+  baseline_model: "replace-with-base-model"
+  tuned_model: "replace-with-tuned-model"
+report_path: "reports/baseline_eval.md"

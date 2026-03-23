@@ -1,0 +1,3 @@
+# Minimal environment for the current repository scaffold, docs, and tests.
+# For heavier LLM or serving dependencies, use the optional extras in pyproject.toml.
+-e .[dev]
