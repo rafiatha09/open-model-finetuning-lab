@@ -43,6 +43,7 @@ open-model-finetuning-lab/
 │   └── sample/
 ├── docs/
 │   ├── 01_foundation/
+│   ├── 02_open_models/
 │   └── phases/
 ├── experiments/
 ├── models/
@@ -78,6 +79,12 @@ Or install directly from `pyproject.toml`:
 
 ```bash
 python -m pip install -e ".[dev]"
+```
+
+For Phase 2 Hugging Face examples:
+
+```bash
+python -m pip install -e ".[dev,llm]"
 ```
 
 Run the starter commands:
@@ -136,9 +143,41 @@ small domain-assistant tasks before training anything.
 
 Deliverables:
 
-- prompt and baseline workflow
-- model-selection notes
-- local inference scripts
+- overview in [`docs/phases/02_open_model_usage.md`](docs/phases/02_open_model_usage.md)
+- guided notes in `docs/02_open_models/`
+- runnable Hugging Face examples in `examples/`
+
+Phase 2 learning path:
+
+1. [`docs/02_open_models/01_huggingface_basics.md`](docs/02_open_models/01_huggingface_basics.md)
+2. [`docs/02_open_models/02_model_loading.md`](docs/02_open_models/02_model_loading.md)
+3. [`docs/02_open_models/03_tokenizer_usage.md`](docs/02_open_models/03_tokenizer_usage.md)
+4. [`docs/02_open_models/04_generation_parameters.md`](docs/02_open_models/04_generation_parameters.md)
+5. [`docs/02_open_models/05_chat_templates.md`](docs/02_open_models/05_chat_templates.md)
+6. [`docs/02_open_models/06_basic_prompting.md`](docs/02_open_models/06_basic_prompting.md)
+7. [`docs/02_open_models/07_self_check_qa.md`](docs/02_open_models/07_self_check_qa.md)
+8. [`examples/hf_loading_demo.py`](examples/hf_loading_demo.py)
+9. [`examples/tokenizer_usage_demo.py`](examples/tokenizer_usage_demo.py)
+10. [`examples/generation_demo.py`](examples/generation_demo.py)
+11. [`examples/generation_controls_demo.py`](examples/generation_controls_demo.py)
+12. [`examples/chat_template_demo.py`](examples/chat_template_demo.py)
+13. [`examples/prompting_demo.py`](examples/prompting_demo.py)
+
+Run the Phase 2 examples:
+
+```bash
+python examples/hf_loading_demo.py
+python examples/tokenizer_usage_demo.py
+python examples/generation_demo.py
+python examples/generation_controls_demo.py
+python examples/chat_template_demo.py
+python examples/prompting_demo.py
+```
+
+Notes:
+
+- the demos use `transformers` and tiny offline local assets created at runtime
+- the goal is API understanding, not model quality
 
 ### Phase 3: SFT / LoRA / QLoRA
 
