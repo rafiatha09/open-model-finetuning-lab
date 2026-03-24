@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 
+from huggingface_hub import snapshot_download
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -45,24 +47,39 @@ def build_inference_prompt(instruction: str, input_text: str = "", system_prompt
     return format_instruction_prompt(example)
 
 
+def _resolve_pretrained_source(model_spec: str, repo_root: Path) -> str | Path:
+    direct_path = Path(model_spec)
+    if direct_path.exists():
+        return direct_path
+
+    relative_path = repo_root / model_spec
+    if relative_path.exists():
+        return relative_path
+
+    try:
+        return snapshot_download(model_spec, local_files_only=True)
+    except Exception:
+        return model_spec
+
+
 def load_model_bundle(config: ServingConfig, repo_root) -> ModelBundle:
     """Load a local causal LM checkpoint and tokenizer for inference."""
-    model_path = config.resolved_model_path(repo_root)
-    if not model_path.exists():
+    model_source = _resolve_pretrained_source(config.model_path, Path(repo_root))
+    if isinstance(model_source, Path) and not model_source.exists():
         raise FileNotFoundError(
-            f"Model path does not exist: {model_path}. "
-            "Run training first or point --model-path at a saved checkpoint."
+            f"Model path does not exist: {model_source}. "
+            "Run training first, point --model-path at a saved checkpoint, or use a cached HF model id."
         )
 
     tokenizer = AutoTokenizer.from_pretrained(
-        model_path,
+        model_source,
         trust_remote_code=config.trust_remote_code,
     )
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token or tokenizer.unk_token
 
     model = AutoModelForCausalLM.from_pretrained(
-        model_path,
+        model_source,
         trust_remote_code=config.trust_remote_code,
     )
     device = _resolve_device()

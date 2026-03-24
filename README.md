@@ -45,6 +45,7 @@ open-model-finetuning-lab/
 │   ├── 01_foundation/
 │   ├── 02_open_models/
 │   ├── 03_finetuning/
+│   ├── 04_evaluation/
 │   └── phases/
 ├── experiments/
 ├── models/
@@ -53,6 +54,7 @@ open-model-finetuning-lab/
 ├── scripts/
 ├── src/
 │   ├── data/
+│   ├── evaluation/
 │   ├── serving/
 │   └── training/
 └── tests/
@@ -247,9 +249,50 @@ simple evaluation harness to compare base vs. tuned models.
 
 Deliverables:
 
-- baseline evaluation config
-- prompt-based eval examples
-- report template in `reports/`
+- overview in [`docs/phases/04_evaluation.md`](docs/phases/04_evaluation.md)
+- guided notes in `docs/04_evaluation/`
+- a sample eval set, evaluation script, and a runnable demo
+
+Phase 4 learning path:
+
+1. [`docs/04_evaluation/01_eval_fundamentals.md`](docs/04_evaluation/01_eval_fundamentals.md)
+2. [`docs/04_evaluation/02_before_after_comparison.md`](docs/04_evaluation/02_before_after_comparison.md)
+3. [`docs/04_evaluation/03_hallucination_checks.md`](docs/04_evaluation/03_hallucination_checks.md)
+4. [`docs/04_evaluation/04_instruction_following_checks.md`](docs/04_evaluation/04_instruction_following_checks.md)
+5. [`docs/04_evaluation/05_error_analysis.md`](docs/04_evaluation/05_error_analysis.md)
+6. [`docs/04_evaluation/06_self_check_qa.md`](docs/04_evaluation/06_self_check_qa.md)
+7. [`data/eval/sample_eval_set.jsonl`](data/eval/sample_eval_set.jsonl)
+8. [`scripts/evaluate_model.py`](scripts/evaluate_model.py)
+9. [`examples/eval_dataset_demo.py`](examples/eval_dataset_demo.py)
+10. [`examples/eval_metrics_demo.py`](examples/eval_metrics_demo.py)
+11. [`examples/eval_demo.py`](examples/eval_demo.py)
+12. [`examples/qualitative_review_demo.py`](examples/qualitative_review_demo.py)
+
+Run the offline evaluation demo:
+
+```bash
+python examples/eval_dataset_demo.py
+python examples/eval_metrics_demo.py
+python examples/eval_demo.py
+python examples/qualitative_review_demo.py
+```
+
+Run a real model-vs-model comparison:
+
+```bash
+python scripts/evaluate_model.py \
+  --eval-set data/eval/sample_eval_set.jsonl \
+  --base-model models/domain-assistant-sft/checkpoint-step-20 \
+  --candidate-model models/domain-assistant-sft \
+  --output-dir reports/eval/sft_compare \
+  --max-examples 3
+```
+
+What the script writes:
+
+- `comparison_rows.jsonl` for row-level outputs and metrics
+- `summary.json` for aggregate metrics
+- `qualitative_review.md` for manual inspection
 
 ### Phase 5: Inference and serving
 
