@@ -11,7 +11,9 @@ requires-python = ">=3.10"
 authors = [
   { name = "Repository Maintainers" }
 ]
-dependencies = []
+dependencies = [
+  "PyYAML>=6.0"
+]
 
 [project.optional-dependencies]
 dev = [

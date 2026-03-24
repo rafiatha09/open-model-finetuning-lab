@@ -44,6 +44,7 @@ open-model-finetuning-lab/
 ├── docs/
 │   ├── 01_foundation/
 │   ├── 02_open_models/
+│   ├── 03_finetuning/
 │   └── phases/
 ├── experiments/
 ├── models/
@@ -51,7 +52,9 @@ open-model-finetuning-lab/
 ├── reports/
 ├── scripts/
 ├── src/
-│   └── open_model_finetuning_lab/
+│   ├── data/
+│   ├── serving/
+│   └── training/
 └── tests/
 ```
 
@@ -82,6 +85,12 @@ python -m pip install -e ".[dev]"
 ```
 
 For Phase 2 Hugging Face examples:
+
+```bash
+python -m pip install -e ".[dev,llm]"
+```
+
+For Phase 3 training scripts:
 
 ```bash
 python -m pip install -e ".[dev,llm]"
@@ -186,9 +195,50 @@ parameter-efficient training so compute requirements stay realistic.
 
 Deliverables:
 
-- dataset schema
-- training config templates
-- reproducible training entry point
+- overview in [`docs/phases/03_sft_lora_qlora.md`](docs/phases/03_sft_lora_qlora.md)
+- guided notes in `docs/03_finetuning/`
+- config-driven training scripts and modules
+
+Phase 3 learning path:
+
+1. [`docs/03_finetuning/01_dataset_formatting.md`](docs/03_finetuning/01_dataset_formatting.md)
+2. [`docs/03_finetuning/02_sft.md`](docs/03_finetuning/02_sft.md)
+3. [`docs/03_finetuning/03_peft.md`](docs/03_finetuning/03_peft.md)
+4. [`docs/03_finetuning/04_lora.md`](docs/03_finetuning/04_lora.md)
+5. [`docs/03_finetuning/05_qlora.md`](docs/03_finetuning/05_qlora.md)
+6. [`docs/03_finetuning/06_checkpointing.md`](docs/03_finetuning/06_checkpointing.md)
+7. [`docs/03_finetuning/07_self_check_qa.md`](docs/03_finetuning/07_self_check_qa.md)
+8. [`configs/training/sft.yaml`](configs/training/sft.yaml)
+9. [`configs/training/lora.yaml`](configs/training/lora.yaml)
+10. [`configs/training/qlora.yaml`](configs/training/qlora.yaml)
+11. [`examples/dataset_formatting_demo.py`](examples/dataset_formatting_demo.py)
+12. [`examples/train_validation_split_demo.py`](examples/train_validation_split_demo.py)
+13. [`examples/training_plan_demo.py`](examples/training_plan_demo.py)
+14. [`scripts/prepare_dataset.py`](scripts/prepare_dataset.py)
+15. [`scripts/run_sft.py`](scripts/run_sft.py)
+16. [`scripts/run_lora.py`](scripts/run_lora.py)
+
+Training flow:
+
+```bash
+python scripts/prepare_dataset.py \
+  --input data/sample/domain_assistant_examples.jsonl \
+  --output-dir data/processed/domain_assistant
+
+python examples/dataset_formatting_demo.py
+python examples/train_validation_split_demo.py
+python examples/training_plan_demo.py
+
+python scripts/run_sft.py --config configs/training/sft.yaml --dry-run
+python scripts/run_lora.py --config configs/training/lora.yaml --dry-run
+```
+
+Notes:
+
+- use the prepared dataset format before touching the training loop
+- prefer LoRA first for practical experimentation
+- treat QLoRA as the memory-efficient extension once LoRA is clear
+- actual LoRA/QLoRA runs require optional dependencies such as `peft`
 
 ### Phase 4: Evaluation
 
@@ -211,6 +261,36 @@ Deliverables:
 - inference helpers
 - serving config
 - local API or CLI assistant
+
+Run local inference against the saved SFT checkpoint:
+
+```bash
+python scripts/run_inference.py \
+  --config configs/serving/local_assistant.yaml \
+  --instruction "Explain LoRA for an ML engineer new to LLM fine-tuning."
+```
+
+Note:
+
+- the current default checkpoint is a tiny learning model, so expect the inference path to work before the answer quality becomes strong
+
+Add optional task context:
+
+```bash
+python scripts/run_inference.py \
+  --config configs/serving/local_assistant.yaml \
+  --instruction "Summarize KV cache." \
+  --input "Keep it to 2 short sentences."
+```
+
+Inspect the exact prompt sent to the model:
+
+```bash
+python scripts/run_inference.py \
+  --config configs/serving/local_assistant.yaml \
+  --instruction "What is tokenization?" \
+  --show-prompt
+```
 
 ### Phase 6: Deployment basics
 
@@ -238,7 +318,8 @@ Deliverables:
 
 - a clean starter package with a tiny CLI
 - sample JSONL data for a future domain assistant
-- a Phase 1 foundations learning path with linked docs and demos
+- Phase 1 and Phase 2 learning paths with linked docs and demos
+- a Phase 3 fine-tuning scaffold with configs, scripts, and reusable modules
 - phase docs and config placeholders
 - an `AGENTS.md` file for future issue-style work
 
@@ -246,10 +327,10 @@ Deliverables:
 
 The next smallest meaningful task is:
 
-1. define the first domain assistant use case
-2. expand the sample dataset into a small training-ready instruction dataset
-3. add a baseline inference script against one open model
-4. add an evaluation script that compares baseline outputs on 10 to 20 examples
+1. choose one real open instruct model for the first baseline
+2. expand the instruction dataset from sample size to a meaningful train/eval split
+3. run a real LoRA dry run, then a small training job
+4. add a simple evaluation script that compares base vs tuned outputs
 
-That sequence keeps the lab educational and grounded. It avoids jumping into
-fine-tuning before the task, data format, and baseline quality are clear.
+That sequence keeps the lab grounded and makes training measurable instead of
+jumping straight from scaffolding to unchecked fine-tuning.

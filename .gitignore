@@ -27,3 +27,6 @@ reports/*
 !reports/.gitkeep
 prompts/*
 !prompts/.gitkeep
+
+settings.json
+.claude
