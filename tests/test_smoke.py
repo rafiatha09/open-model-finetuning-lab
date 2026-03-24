@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_phase_roadmap_docs_exist() -> None:
     phase_docs = sorted((ROOT / "docs/phases").glob("*.md"))
-    assert len(phase_docs) == 7
+    assert len(phase_docs) == 6
 
 
 def test_sample_data_files_exist() -> None:

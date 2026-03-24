@@ -15,8 +15,7 @@ This repository is organized as a staged lab:
 3. Fine-tuning with SFT, LoRA, and QLoRA
 4. Evaluation
 5. Inference and serving
-6. Deployment basics
-7. Later extension into DPO and advanced post-training
+6. Advanced post-training and future extensions
 
 Each phase has:
 
@@ -47,6 +46,7 @@ open-model-finetuning-lab/
 │   ├── 03_finetuning/
 │   ├── 04_evaluation/
 │   ├── 05_serving/
+│   ├── 06_advanced/
 │   └── phases/
 ├── experiments/
 ├── models/
@@ -373,27 +373,25 @@ curl -X POST http://127.0.0.1:8000/generate \
   -d '{"instruction":"Explain LoRA for a beginner.","max_new_tokens":40}'
 ```
 
-### Phase 6: Deployment basics
+### Phase 6: Advanced post-training and future extensions
 
-Prepare the repo so later deployment is straightforward: artifact naming,
-environment handling, config separation, and evaluation before release.
-
-Deliverables:
-
-- deployment checklist
-- packaging notes
-- simple serving lifecycle doc
-
-### Phase 7: DPO and advanced post-training
-
-After the supervised path is stable, extend the lab with preference data,
-ranking, and post-training methods such as DPO.
+After the supervised path is stable, extend the lab with post-training ideas
+such as DPO, reward models, GRPO/RL, and distillation. This phase is for future
+extension, not for the first production version.
 
 Deliverables:
 
-- preference dataset schema
-- experiment tracking conventions
-- comparison plan between SFT and post-training
+- advanced bridge docs in `docs/06_advanced/`
+- clear notes on when each advanced method becomes useful after SFT / LoRA
+- a practical boundary between core Goal A work and later upgrades
+
+Phase 6 learning path:
+
+1. [`docs/06_advanced/01_dpo.md`](docs/06_advanced/01_dpo.md)
+2. [`docs/06_advanced/02_reward_models.md`](docs/06_advanced/02_reward_models.md)
+3. [`docs/06_advanced/03_grpo_and_rl.md`](docs/06_advanced/03_grpo_and_rl.md)
+4. [`docs/06_advanced/04_distillation.md`](docs/06_advanced/04_distillation.md)
+5. [`docs/06_advanced/05_self_check_qa.md`](docs/06_advanced/05_self_check_qa.md)
 
 ## What is already included
 
