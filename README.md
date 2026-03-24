@@ -46,6 +46,7 @@ open-model-finetuning-lab/
 │   ├── 02_open_models/
 │   ├── 03_finetuning/
 │   ├── 04_evaluation/
+│   ├── 05_serving/
 │   └── phases/
 ├── experiments/
 ├── models/
@@ -301,13 +302,33 @@ domain assistant with clear prompt/system behavior.
 
 Deliverables:
 
-- inference helpers
-- serving config
-- local API or CLI assistant
+- overview in [`docs/phases/05_inference_and_serving.md`](docs/phases/05_inference_and_serving.md)
+- guided notes in `docs/05_serving/`
+- a minimal local API server and backend abstraction
+
+Phase 5 learning path:
+
+1. [`docs/05_serving/01_quantization.md`](docs/05_serving/01_quantization.md)
+2. [`docs/05_serving/02_vllm_and_tgi_basics.md`](docs/05_serving/02_vllm_and_tgi_basics.md)
+3. [`docs/05_serving/03_latency_vs_cost.md`](docs/05_serving/03_latency_vs_cost.md)
+4. [`docs/05_serving/04_batching.md`](docs/05_serving/04_batching.md)
+5. [`docs/05_serving/05_serving_api.md`](docs/05_serving/05_serving_api.md)
+6. [`docs/05_serving/06_self_check_qa.md`](docs/05_serving/06_self_check_qa.md)
+7. [`scripts/run_inference.py`](scripts/run_inference.py)
+8. [`scripts/serve_model.py`](scripts/serve_model.py)
+9. [`src/omlab/inference/generate.py`](src/omlab/inference/generate.py)
+10. [`src/omlab/inference/api.py`](src/omlab/inference/api.py)
+11. [`examples/serving_backend_demo.py`](examples/serving_backend_demo.py)
+12. [`examples/serving_api_demo.py`](examples/serving_api_demo.py)
+13. [`examples/batching_demo.py`](examples/batching_demo.py)
 
 Run local inference against the saved SFT checkpoint:
 
 ```bash
+python examples/serving_backend_demo.py
+python examples/serving_api_demo.py
+python examples/batching_demo.py
+
 python scripts/run_inference.py \
   --config configs/serving/local_assistant.yaml \
   --instruction "Explain LoRA for an ML engineer new to LLM fine-tuning."
@@ -333,6 +354,23 @@ python scripts/run_inference.py \
   --config configs/serving/local_assistant.yaml \
   --instruction "What is tokenization?" \
   --show-prompt
+```
+
+Run the local serving API:
+
+```bash
+python scripts/serve_model.py \
+  --config configs/serving/local_assistant.yaml \
+  --host 127.0.0.1 \
+  --port 8000
+```
+
+Then send a request:
+
+```bash
+curl -X POST http://127.0.0.1:8000/generate \
+  -H "Content-Type: application/json" \
+  -d '{"instruction":"Explain LoRA for a beginner.","max_new_tokens":40}'
 ```
 
 ### Phase 6: Deployment basics

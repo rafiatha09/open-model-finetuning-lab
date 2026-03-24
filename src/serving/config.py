@@ -13,6 +13,7 @@ import yaml
 class ServingConfig:
     assistant_name: str
     model_path: str
+    backend: str = "transformers"
     interface: str = "cli"
     max_new_tokens: int = 128
     temperature: float = 0.0
@@ -45,6 +46,7 @@ def load_serving_config(path: str | Path) -> ServingConfig:
     return ServingConfig(
         assistant_name=str(raw.get("assistant_name", "local-assistant")),
         model_path=str(raw.get("model_path", "models/domain-assistant-sft")),
+        backend=str(raw.get("backend", "transformers")),
         interface=str(raw.get("interface", "cli")),
         max_new_tokens=int(raw.get("max_new_tokens", 128)),
         temperature=float(raw.get("temperature", 0.0)),

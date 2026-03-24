@@ -1,11 +1,12 @@
 # Starter serving config placeholder.
 
 assistant_name: "domain-assistant"
-model_path: "models/domain-assistant-sft"
+model_path: "models/domain-assistant-lora"
+backend: "transformers"
 interface: "cli"
-max_new_tokens: 120
-temperature: 0.0
-top_p: 1.0
-do_sample: false
+max_new_tokens: 80
+temperature: 0.7
+top_p: 0.9
+do_sample: true
 system_prompt: |
   You are a careful domain assistant. Be factual, concise, and beginner-friendly.
